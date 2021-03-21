@@ -46,7 +46,7 @@
 	let date = processDate(yesterday); //파라미터로 들어온 날짜들을 text만 추출해서 더하고, 1~9월인 경우 앞에 0붙여줘서 01~09로 바꾸는 기능
 
 	//----------------------------
-	const apiURL = 'http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=';
+	const apiURL = 'https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=';
 	const requestURL = apiURL+date;
 
 	let request = new XMLHttpRequest();
