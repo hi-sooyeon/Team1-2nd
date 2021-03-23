@@ -443,6 +443,12 @@ mark,
   list-style: none;
 }
 
+.modal-body > #sylist {
+  text-align: left;
+  position: relative;
+  left: 100px;
+}
+
 .list-inline {
   padding-left: 0;
   list-style: none;
@@ -5493,6 +5499,11 @@ a.close.disabled {
 .modal-title {
   margin-bottom: 0;
   line-height: 1.5;
+}
+
+.modal-body > #sylist {
+  position: relative;
+  left: 1px;
 }
 
 .modal-body {
