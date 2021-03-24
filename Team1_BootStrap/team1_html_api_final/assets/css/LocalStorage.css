@@ -1,0 +1,40 @@
+@charset "UTF-8";
+
+#exHeader {
+	padding-top: 20px;
+	width: 70%;
+	margin: auto;
+}
+
+section {
+	width: 70%;
+	margin: auto;
+}
+
+table {
+	width: 100%
+}
+
+table, tr, th, td {
+	text-align: center;
+}
+
+h3, h1 {
+	font-family: 'Nanum Pen Script', cursive;
+}
+
+#totalVisit {
+	float : right;
+	text-align: right
+	height:5%;
+	font-family: 'Nanum Pen Script', cursive;
+	font-size : 20px;
+}
+
+#clear {
+    margin : auto;
+}
+
+#clearDiv {
+    text-align : center;
+}
