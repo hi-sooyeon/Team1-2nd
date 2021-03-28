@@ -41,17 +41,11 @@ $(document).ready(()=>{ //document가 모두 로드된 후 실행
 	// 추가(sweet alert으로 약간 수정함)
     $('#add').click((e)=>{ // preventDefault 함수 적용시 event파라메터 필수
         e.preventDefault(); //클릭시 기본동작인 기능 작동을 중단시킴  (submit)
-            //const title = $('#titleInput').val()!=='' ? $('#titleInput').val() : null; //인풋태그 비어있으면 null
-            if ($('#titleInput').val()!=='') { // 만약 id값의 val이 ''이 아니면 val값이 나오게 하고 맞으면 null
-                title = $('#titleInput').val(); 
-            } else {
-                title = null; 
-                add_alert(); // alert창 띄우려고 했우요
-            };
+            const title = $('#titleInput').val()!=='' ? $('#titleInput').val() : null; //인풋태그 비어있으면 null
             const description = $('#descriptionInput').val()!=='' ? $('#descriptionInput').val()  : null; //얘도 삼항. 인풋태그 비어있으면 null
-            $('#titleInput').val('');       //인풋 빈문자열로 변경 (setter)
-            $('#descriptionInput').val(''); //인풋 빈문자열로 변경 (setter)
-            if(title && description){       //마찬가지로 둘중 하나라도 null이면 실행안됩니다.
+            const coloris = $('#selectbox').val()!=='선택하세요' ? $('#selectbox').val() : null;
+            
+            if(title && description && coloris){       //마찬가지로 둘중 하나라도 null이면 실행안됩니다.
                 let id = dataCards.config.maxid+1; //id를 계속 1씩 늘려줘서 고유값 보존하기(PK)
                 const newCard = {           //card 객체생성
                     id,
@@ -65,6 +59,12 @@ $(document).ready(()=>{ //document가 모두 로드된 후 실행
                 save();    // save()를 함수로 만들어두었음. localStorage.setItem('@kanban:data', JSON.stringify(dataCards)); 대충 로컬스토리지를 새롭게 덮어쓴다는 뜻ㅎ
                 appendComponents(newCard); // 새로운카드는 append됨
                 initializeCards(); //36번줄 ㄱㄱ
+
+                $('#titleInput').val('');       //인풋 빈문자열로 변경 (setter)
+                $('#descriptionInput').val(''); //인풋 빈문자열로 변경 (setter)
+                $('#selectbox').val('선택하세요'); //초기화
+            } else{
+                add_alert(title, description, coloris);
             }
         });
 
@@ -81,6 +81,8 @@ $(document).ready(()=>{ //document가 모두 로드된 후 실행
             case "TESTING" : color = "purple"; 
             break; 
             case "DONE" : color = "red"; 
+            break;
+            case "선택하세요" : color = null;
             break;
         }
     });
@@ -241,11 +243,22 @@ function alldelete(){
  });
  }
 
+ //add_alert(title, description, coloris);
  // 추가하기 sweet alert
-function add_alert(){
+function add_alert(title, description, coloris){
 	swal("내용이 없습니다.")
-.then((value) => {
-  swal(`내용을 입력해 주세요: ${value}`);
+.then((result) => {
+    result = '';
+    if(!coloris){
+        result += 'Type ';
+    }
+    if(!title){
+        result += 'Title ';
+    }
+    if(!description){
+        result += 'Description ';
+    }
+  swal(`내용을 입력해 주세요 : ${result}`);
 });
 }
 
