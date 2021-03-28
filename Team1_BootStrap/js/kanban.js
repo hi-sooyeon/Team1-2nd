@@ -89,8 +89,30 @@ $(document).ready(()=>{ //document가 모두 로드된 후 실행
 
     //dataCards = {config:{maxid:0}, cards:[]};
     $("#deleteAll").click(()=>{
-        dataCards.cards = [];
-        save();
+        swal({
+            title: "전체 삭제하시겠습니까?",
+            text: "한번 삭제시 복구가 불가능합니다!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+             dataCards.cards = [];
+                  save();
+              
+              swal("전체 삭제되었습니다!", {
+                icon: "success",
+                
+              });
+          setTimeout(function(){  // 시간제한 걸기 -> 왜 걸었음?
+                                  // if문으로 들어가서 실행되는 순간 swal이 번쩍 하고 사라짐 그래서 시간지연 시켜줌
+                location.reload(); // location의 객체 reload : 브라우저 창에 현재 문서를 다시 불러옴
+          },1000);
+            } else {
+              swal("취소하였습니다!");
+            }
+          });
     });
     $("#theme-btn").click((e)=>{
         e.preventDefault(); //버튼 클릭시 발생하는 디폴트 함수 막음
@@ -214,34 +236,6 @@ function position(cardBeignDragged, color){
     dataCards.cards[index].position = color;
     save();
 }
-
-// 삭제버튼 sweet alert
-function alldelete(){
-    swal({
-   title: "전체 삭제하시겠습니까?",
-   text: "한번 삭제시 복구가 불가능합니다!",
-   icon: "warning",
-   buttons: true,
-   dangerMode: true,
- })
- .then((willDelete) => {
-   if (willDelete) {
-    dataCards.cards = [];
-         save();
-     
-     swal("전체 삭제되었습니다!", {
-       icon: "success",
-       
-     });
- setTimeout(function(){  // 시간제한 걸기 -> 왜 걸었음?
-                         // if문으로 들어가서 실행되는 순간 swal이 번쩍 하고 사라짐 그래서 시간지연 시켜줌
-       location.reload(); // location의 객체 reload : 브라우저 창에 현재 문서를 다시 불러옴
- },1000);
-   } else {
-     swal("취소하였습니다!");
-   }
- });
- }
 
  // 추가하기 sweet alert
 function add_alert(title, description, coloris){
