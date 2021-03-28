@@ -243,10 +243,9 @@ function alldelete(){
  });
  }
 
- //add_alert(title, description, coloris);
  // 추가하기 sweet alert
 function add_alert(title, description, coloris){
-	swal("내용이 없습니다.")
+	swal("입력되지 않은 항목이 있습니다.", "", "error")
 .then((result) => {
     result = '';
     if(!coloris){
@@ -258,7 +257,11 @@ function add_alert(title, description, coloris){
     if(!description){
         result += 'Description ';
     }
-  swal(`내용을 입력해 주세요 : ${result}`);
+    swal(
+        '아래 항목을 입력해 주세요',
+        `${result}`,
+        'info'
+      )
 });
 }
 
