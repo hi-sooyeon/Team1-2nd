@@ -42,7 +42,7 @@
 	<div id="wrap">
 		<header>
 			<h1>서울도서관 연령대별 등록 회원수 현황정보</h1>
-			<span><b>&emsp;Source : </b></span> <a href="http://data.seoul.go.kr/dataList/OA-15474/S/1/datasetView.do">
+			<span><b>&emsp;Source : </b></span> <a href="https://data.seoul.go.kr/dataList/OA-15474/S/1/datasetView.do">
 														http://data.seoul.go.kr/dataList/OA-15474/S/1/datasetView.do</a>
 		</header>
 		<article>
@@ -61,7 +61,7 @@
 	$(function(){
 		var myChart;				
 		$.ajax({
-			url:"http://openapi.seoul.go.kr:8088/59596d714573736f373956457a5959/json/SeoulLibraryMemberInfo/13/92/",
+			url:"https://openapi.seoul.go.kr:8088/59596d714573736f373956457a5959/json/SeoulLibraryMemberInfo/13/92/",
 			type:"GET",
 			dataType:"json",
 			success:function(data){
