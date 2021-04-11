@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js" integrity="sha512-dnUg2JxjlVoXHVdSMWDYm2Y5xcIrJg1N+juOuRi0yLVkku/g26rwHwysJDAMwahaDfRpr1AxFz43ktuMPr/l1A==" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	
+	<script>
+	
+	var xAxis = new Array(); //x축
+	var visitors = new Array(); //일일 관객
+	
+	$(function() {
+		
+		
+		
+		let movieAPI = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=";
+		
+		$('#btn').click(function() {
+			xAxis = [];
+			visitors = [];
+			
+			$('#chartArea').empty();
+			$('<canvas>').attr("id", "myChart").appendTo($('#chartArea'))
+			
+			let movieURL = movieAPI + $('#selectDate').val().replace(/-/g, "");
+			
+			$.getJSON(movieURL, function(data) {
+			console.log(data);
+				  
+				while(xAxis > 0 ) {
+					xAxis.pop();
+					visitors.pop();
+
+				};
+				
+				//$('#myChart').empty();
+				  
+				  $.each(data.boxOfficeResult.dailyBoxOfficeList, function(index, obj) {
+					 
+					  xAxis.push(obj.movieNm);
+					  visitors.push(obj.audiAcc);
+					  
+
+				});//each
+				 
+			    var ctx = document.getElementById('myChart').getContext('2d');
+				var myChart = new Chart(ctx, {
+				    type: 'bar',
+				    data: {
+				        labels: xAxis,
+				        datasets: [{
+				            label: '# 일일 관람객',
+				            data: visitors,
+				            backgroundColor: [
+				                'rgba(255, 99, 132, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(255, 206, 86, 0.2)',
+				                'rgba(75, 192, 192, 0.2)',
+				                'rgba(153, 102, 255, 0.2)',
+				                'rgba(255, 159, 64, 0.2)'
+				            ],
+				            borderColor: [
+				                'rgba(255, 99, 132, 1)',
+				                'rgba(54, 162, 235, 1)',
+				                'rgba(255, 206, 86, 1)',
+				                'rgba(75, 192, 192, 1)',
+				                'rgba(153, 102, 255, 1)',
+				                'rgba(255, 159, 64, 1)'
+				            ],
+				            borderWidth: 1
+				        }]
+				    },
+				    options: {
+				        scales: {
+				            y: {
+				                beginAtZero: true
+				            }
+				        }
+				    }
+				}); //차트
+			}); // getJSON 끝
+		});// 버튼 끝
+	}); // 함수 끝
+
+	
+			
+	
+	
+	</script>
+	<style type="text/css">
+		#myChart {
+			width: 400px;
+			height: 400px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<header id="header">
+		<h1>영화순위 조회하기</h1>
+		<p>&nbsp;단, 어제 날짜까지만 조회 가능합니다.</p>
+		</header>
+		<section id="section">
+			<input type="date" id="selectDate">
+			<input type="button" id="btn" value="검색하기">
+		</section>
+		<hr>
+	</div>
+	<div id="chartArea">
+		<canvas id="myChart"></canvas>
+	</div>
+</body>
+</html>

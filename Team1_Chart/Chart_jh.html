@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Chart</title>
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- chart.js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<!-- font -->
+	<link href="http://fonts.googleapis.com/earlyaccess/hanna.css" rel="stylesheet">
+	<!-- css -->
+	<style type="text/css">
+	#wrap {
+		width: 80%;
+		margin: auto;
+		border: 1px solid #e6e1e1;
+		padding: 2%;
+	}
+	.hn {
+		font-family: 'Hanna', sans-serif;
+		color : #27326b;
+	}
+	.button {
+		width: 80px;
+		background-color: #b9b6b6;
+		border: none;
+		color: #fff;
+		padding: 5px 0;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 15px;
+		margin: 4px;
+		cursor: pointer;
+		border-radius: 10px;
+	}
+	.button:hover {
+    	background-color: blue;
+	}	
+	</style>
+</head>
+	<body>
+		<div id="wrap">
+			<header>
+				<h2 class="hn">연도별 어린이집 및 아동 현황 통계</h2>
+			</header>
+			<button class="button hn" id="button"> 확인하기</button>
+			<section>
+				<div id="chartArea"></div>
+			</section>
+		</div>
+	</body>
+	<script type="text/javascript">
+	$(function (){
+		var myChart;
+		var year = [];
+		var sisul = [];
+		var pnTeacher = [];
+		var cnChild = [];
+		var pnChild = [];
+		var color = [];
+
+		$('#button').one('click', function(){
+			$('#chartArea').empty();
+			$('<canvas>').attr("id", "myChart").appendTo($('#chartArea'));
+			var ctx = document.getElementById("myChart").getContext('2d');
+			
+				$.ajax(
+						{
+							url : "http://openapi.seoul.go.kr:8088/6c6f6f516c6a6f6f38374f7378634e/json/statSisulYearInfo/1/20",
+							dataType : "json",
+							success : function(data) {
+							//console.log(data);
+							
+							$.each(data.statSisulYearInfo.row, function(idx, obj) {
+									year.push(obj.STYEAR);
+									sisul.push(obj.CNTSISUL);
+									pnTeacher.push(obj.PNTEACHER);
+									cnChild.push(obj.CNCHILD);
+									pnChild.push(obj.PNCHILD);
+							})
+							
+							myChart = new Chart(ctx, {
+								type : "bar",
+								data : {
+									labels: year,
+									datasets: [{
+										label: "어린이집 수",
+										data : sisul,
+										backgroundColor : 'rgba(255, 99, 132, 0.2)',
+										borderColor : 'rgba(255, 99, 132, 0.2)',
+										borderWidth : 1
+									},{
+										label: "교직원 수",
+										data : pnTeacher,
+										backgroundColor : 'rgba(255, 205, 86, 0.2)',
+										borderColor : 'rgba(255, 205, 86, 0.2)',
+										borderWidth : 1
+									},{
+										label: "아동 정원",
+										data : cnChild,
+										backgroundColor : 'rgba(75, 192, 192, 0.2)',
+										borderColor : 'rgba(75, 192, 192, 0.2)',
+										borderWidth : 1
+									},{
+										label: "아동 현원",
+										data : pnChild,
+										backgroundColor : 'rgba(54, 162, 235, 0.2)',
+										borderColor : 'rgba(54, 162, 235, 0.2)',
+										borderWidth : 1
+									}]
+								},
+								options: {
+							        maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+							        scales: {
+							            yAxes: [{
+							                ticks: {
+							                    beginAtZero:true
+							                }
+							            }]
+							        }
+							    }
+							})
+						}
+					}
+				);
+		});
+	});
+	
+	
+	</script>
+</html>

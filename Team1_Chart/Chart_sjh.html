@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- <html lang="en" style="height: 100%"> -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>차트그리기</title>
+
+<!-- 차트 링크 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style type="text/css">
+		#wrap {
+			width: 80%;
+			margin: auto;
+		}
+		
+		#article > #movieTable {
+			width: 80%;
+			margin: auto;
+			text-align: center;
+		}
+		
+	</style>
+</head>
+<body>
+	
+	<div id="wrap">
+		<header id="header">
+		<h4>영화의 날짜를 선택해주세요</h4>
+		</header>
+		<section id="section">
+			<input type="date" id="selectDate">
+			<input type="button" id="btn" value="검색하기">
+		</section>
+		<hr>
+	</div>
+	<div class="container">
+	
+		<!-- 차트 id -->
+		<canvas id="myChart"></canvas>
+	</div>
+	<script>
+	
+	let nm = new Array();
+	let acc = new Array();
+	
+	// 영화api
+	$(function() {
+		$('#btn').click(function() {
+			
+		const movieAPI = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888";
+		
+		//const requestURL = movieAPI + $('#selectDate').val().replace(/-/g, "");
+		
+		const data = {targetDt : $('#selectDate').val().replace(/-/g, "")}
+		
+		console.log(data);
+		
+		$.getJSON(movieAPI, data, function(data, textStatus, xhr) {
+			
+			console.log(data.boxOfficeResult);
+			//console.log(textStatus);
+			//console.log(xhr.readyState);
+			
+			while(nm.length > 0) {
+				nm.pop();
+				acc.pop();
+			}
+			
+			$('#tbody').empty();
+			
+			$.each(data.boxOfficeResult.dailyBoxOfficeList, function(index, obj) {
+				let temp = "<tr><td>"+ obj.rank +"</td><td>"+ obj.movieNm +
+				"</td><td>"+ obj.audiAcc +"</td></tr>";
+				
+						nm.push(obj.movieNm);
+						acc.push(obj.audiAcc);
+				
+				$('#tbody').append(temp);
+			});
+		
+	// 차트
+		var ctx = document.getElementById('myChart');
+		var myChart = new Chart(ctx,
+				{
+					type : 'line', // 넣고싶은 차트 이름을 넣으면 그 차트대로 다 바뀜
+					data : { // 차트에 필요한 x축,y축 데이터, 해당 라벨 정보를 담는 객체
+						labels : nm, // x축 데이터의 라벨 , 배열 형태로 들어감
+						datasets : [ { // 배열
+							label : '# of Votes',
+							data : acc,
+							backgroundColor : [ 'rgba(255, 99, 132, 0.2)',
+									'rgba(54, 162, 235, 0.2)',
+									'rgba(255, 206, 86, 0.2)',
+									'rgba(75, 192, 192, 0.2)',
+									'rgba(153, 102, 255, 0.2)',
+									'rgba(255, 159, 64, 0.2)' ],
+							borderColor : [ 'rgba(255, 99, 132, 1)',
+									'rgba(54, 162, 235, 1)',
+									'rgba(255, 206, 86, 1)',
+									'rgba(75, 192, 192, 1)',
+									'rgba(153, 102, 255, 1)',
+									'rgba(255, 159, 64, 1)' ],
+							borderWidth : 1
+							
+							
+						} ]
+					},
+					options : {
+						
+						title:{
+							display:true,
+							text:'영화 누적 관객수 조회하기'
+							
+						}
+						
+					
+					} //options
+				});
+		}); //json끝
+		}); // button끝
+	
+		
+	});// onload끝
+	
+	
+		
+	</script>
+	
+		<article id="article">
+			<table id="movieTable" border="3">
+				<thead><tr><td>랭킹</td><td>영화제목</td><td>누적 관객수</td></tr></thead>
+				<tbody id="tbody"></tbody>
+			</table>
+		</article>
+</body>
+</html>
+

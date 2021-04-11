@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- <html lang="en" style="height: 100%"> -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>부트스트랩 차트그리기</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<!-- 차트 링크 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<style type="text/css">
+	body {
+		margin: 10px;
+	}
+</style>
+
+
+</head>
+
+<body>
+	<div class="container">
+		<canvas id="myChart"></canvas>
+	</div>
+	<!-- 부트스트랩 -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		let movieNameList = [];  //이름담을 리스트
+		let movieDailyView = []; //관객수 리스트
+		let randomColor01 = [];	 //랜덤컬러
+		let randomColor02 = [];  //border
+		
+	    let apiURL = 'http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=20210401';
+		
+	    $.getJSON(apiURL, function(data){ //JSON사용
+	       const movieData = data;
+	    
+		let dailyMovieList = movieData.boxOfficeResult.dailyBoxOfficeList;
+		
+		function setRandomColor(list) {
+			for(let i = 0; i < 10; i++){ //나중에수정해야함. 유연하게.
+				let color01 = Math.floor(Math.random() * 255);
+				let color02 = Math.floor(Math.random() * 255);
+				let color03 = Math.floor(Math.random() * 255);
+				list[i] = "rgba(" + color01 + ", " + color02 + ", " + color03 + ", 0.2)"; 
+			}
+		}
+		
+		setRandomColor(randomColor01);
+		setRandomColor(randomColor02);
+
+		$.each(dailyMovieList, function(index, movie){ //chart에 데이터넣기
+				movieNameList[index] = movie.movieNm;
+				movieDailyView[index] = movie.audiCnt;
+			});
+		
+		var ctx = document.getElementById('myChart');
+		var myChart = new Chart(ctx,
+				{
+					type : 'bar',
+					data : {
+						labels : movieNameList,
+						datasets : [ {
+							label : '일일관객수',
+							data : movieDailyView,
+							backgroundColor : randomColor01,
+							borderColor : randomColor02,
+							borderWidth : 1
+						} ]
+					},
+					options : {
+						scales : {
+							yAxes : [ {
+								ticks : {
+									beginAtZero : true
+								}
+							} ]
+						}
+					}
+				});
+	    });
+	});	
+</script>
+</html>
+

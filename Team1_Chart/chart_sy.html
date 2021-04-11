@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- chart js -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<!-- css -->
+	<style type="text/css">
+	body {
+		margin: 20px;
+	}
+	#wrap {
+		width: 80%;
+		margin: auto;
+		border: dotted 2px;
+		padding: 2%;
+	}
+	header {
+		padding: 4%;
+	}
+	article {
+		padding: 2%;
+		border: dotted 1px;
+		border-color: grey;
+		margin-top: 1%;
+		margin-bottom: 4%;
+		
+	}
+	section {
+		padding: 3%;
+	}
+	#chartArea {
+		width: 100%;
+		margin: auto;
+	}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<header>
+			<h1>서울도서관 연령대별 등록 회원수 현황정보</h1>
+			<span><b>&emsp;Source : </b></span> <a href="http://data.seoul.go.kr/dataList/OA-15474/S/1/datasetView.do">
+														http://data.seoul.go.kr/dataList/OA-15474/S/1/datasetView.do</a>
+		</header>
+		<article>
+			<span><b>조회 연령대 설정</b></span><br><br>
+			Start : <select id="start"></select> &nbsp; ~ &nbsp;
+			End : <select id="end"></select>&emsp;
+			<input type="button" id="btn1" value="조회하기">
+		</article>
+		<hr>
+		<section>
+			<div id="chartArea"></div>
+		</section>
+	</div>
+</body>
+<script>		
+	$(function(){
+		var myChart;				
+		$.ajax({
+			url:"http://openapi.seoul.go.kr:8088/59596d714573736f373956457a5959/json/SeoulLibraryMemberInfo/13/92/",
+			type:"GET",
+			dataType:"json",
+			success:function(data){
+				$.each(data.SeoulLibraryMemberInfo.row,function(index,obj){
+					$('<option>').attr('value', obj["YEAR"]).html(obj["YEAR"]).appendTo($('#start'));
+					$('<option>').attr('value', obj["YEAR"]).html(obj["YEAR"]).appendTo($('#end'));
+				});
+			},
+			fail: function(xhr){
+				console.log(xhr.status);
+			}
+		});				
+						
+		$('#btn1').click(function(){
+			if($('#start').val() > $('#end').val()){
+				alert("시작연도가 더 클 순 없습니다. 다시 선택해주세요.");
+				location.reload();
+			}
+			
+			$('#chartArea').empty();
+			$('<canvas>').attr("id", "myChart").appendTo($('#chartArea'));	
+			var ctx = document.getElementById("myChart").getContext('2d');
+					
+			var year = [];
+			var userCnt = [];
+			var color = [];
+			$.ajax({
+				url:"http://openapi.seoul.go.kr:8088/59596d714573736f373956457a5959/json/SeoulLibraryMemberInfo/13/92/",
+				type:"GET",
+				dataType:"json",
+				
+				success:function(data){
+					$.each(data.SeoulLibraryMemberInfo.row,function(index,obj){
+						if(($('#start').val() <= obj["YEAR"]) && ($('#end').val() >= obj["YEAR"])){
+							year.push(obj["YEAR"]);
+							userCnt.push(obj["CNT"]);
+							var rColor = "#" + Math.random().toString(16).substr(2,6);
+							color.push(rColor);
+						}
+					});
+					myChart = new Chart(ctx, {
+						type: 'bar',
+						data: {
+								labels: year,
+								datasets: [{
+										label: '가입자 수(명)',
+							            data: userCnt,
+							            backgroundColor: color,
+							            borderColor: color,
+							            borderWidth: 1
+							        }]
+							    },
+						options: {
+							     maintainAspectRatio: true, // default value. false일 경우 포함된 div의 크기에 맞춰서 그려짐.
+							     scales: {
+							     yAxes: [{
+							               ticks: { beginAtZero:true }
+							            }]
+							        }
+							    }
+							});
+						},
+						fail: function(xhr){
+							console.log(xhr.status);
+						}
+			}); //$('#btn1').click > $.ajax({
+		}); //$('#btn1').click(function()
+	}); //$(function(){
+</script>
+</html>
